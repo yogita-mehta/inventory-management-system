@@ -1,5 +1,7 @@
 # High-Concurrency Inventory & Order Management System
 
+![Dashboard Preview](assets/dashboard-preview.png)
+
 [![Node.js](https://img.shields.io/badge/Node.js-v20.x-339933?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Express-4.19.2-000000?style=flat-square&logo=express&logoColor=white)](https://expressjs.com/)
 [![ioredis](https://img.shields.io/badge/ioredis-5.4.1-DD0031?style=flat-square&logo=redis&logoColor=white)](https://github.com/redis/ioredis)
@@ -107,6 +109,27 @@ npm run start:inventory-worker
 npm run start:order-worker
 npm run start:dashboard
 ```
+
+---
+
+## ☁️ Deployment (Free Tier)
+
+### One-Click via Render Blueprints
+This project is optimized for the **Render Free Tier**. By using the included `render.yaml`, you can deploy the entire system (API + Workers + Dashboard + Redis) for $0/month.
+
+1. Push your code to GitHub.
+2. Go to **Render Dashboard** → **Blueprints** → **New Blueprint**.
+3. Connect this repository.
+4. Render will automatically spin up:
+   - **inventory-monolith**: A single web service running all components.
+   - **inventory-redis**: A free-tier Redis instance.
+
+### Quick Deploy (Monolithic Mode)
+On any other cloud (Railway, Heroku, etc.):
+1. Set the Start Command to `npm run start:monolith`.
+2. Connect a Redis database and set the `REDIS_URL` environment variable.
+
+---
 
 ## 📂 Project Structure
 

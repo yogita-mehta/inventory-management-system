@@ -4,12 +4,13 @@
   "description": "Event-driven, real-time inventory and order management system built on Redis Streams, with atomic multi-item stock reservation and saga-style compensating transactions.",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node src/monolith.js",
     "seed": "node scripts/seed.js",
     "start:api": "node src/api/server.js",
     "start:inventory-worker": "node src/workers/inventoryWorker.js",
     "start:order-worker": "node src/workers/orderWorker.js",
     "start:dashboard": "node src/dashboard/server.js",
+    "start:monolith": "node src/monolith.js",
     "load-test": "node scripts/loadTest.js",
     "flash-sale-test": "node scripts/flashSaleTest.js"
   },
