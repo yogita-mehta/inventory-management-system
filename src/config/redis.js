@@ -4,11 +4,17 @@ const Redis = require('ioredis');
 const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
 
 function createClient(label = 'client') {
+  // Log connection attempt (masked password)
+  const maskedUrl = REDIS_URL.replace(/:\/\/.*:.*@/, '://***:***@');
+  console.log(`[redis:${label}] attempting to connect to: ${maskedUrl}`);
+
   const client = new Redis(REDIS_URL, {
     retryStrategy(times) {
-      return Math.min(times * 200, 5000);
+      // Exponential backoff with a cap of 5 seconds
+      return Math.min(times * 500, 5000);
     },
-    maxRetriesPerRequest: 3,
+    // We remove the hard retry limit to prevent crashing during transient network issues
+    maxRetriesPerRequest: null,
   });
 
   client.on('error', (err) => {
