@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Inventory Control</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e13;
+    --panel: #10161f;
+    --panel-border: #1d2733;
+    --text: #e6edf3;
+    --muted: #6b7c8f;
+    --amber: #f2a900;
+    --teal: #2dd4a7;
+    --coral: #ff5c5c;
+    --violet: #8b8ff2;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    padding: 32px 40px 60px;
+  }
+  header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--panel-border);
+    padding-bottom: 18px;
+  }
+  header h1 { font-size: 20px; font-weight: 700; margin: 0; }
+  header h1 span { color: var(--muted); font-weight: 400; }
+  .pulse {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--teal); margin-right: 8px;
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(45,212,167,0.5); }
+    50% { opacity: 0.6; box-shadow: 0 0 0 6px rgba(45,212,167,0); }
+  }
+  .status-line { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); }
+
+  .funnel {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .stage {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    padding: 18px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stage::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .stage.placed::before { background: var(--muted); }
+  .stage.reserved::before { background: var(--amber); }
+  .stage.confirmed::before { background: var(--teal); }
+  .stage.rejected::before { background: var(--coral); }
+  .stage.cancelled::before { background: var(--violet); }
+  .stage .label {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--muted); margin-bottom: 10px;
+  }
+  .stage .value { font-family: 'JetBrains Mono', monospace; font-size: 34px; font-weight: 700; }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .panel h2 {
+    font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--muted); margin: 0 0 16px; font-weight: 500;
+  }
+
+  .product-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 90px;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--panel-border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+  .product-row:last-child { border-bottom: none; }
+  .product-row .name { color: var(--text); }
+  .bar-track {
+    background: #060a0e;
+    border-radius: 6px;
+    height: 18px;
+    overflow: hidden;
+    border: 1px solid var(--panel-border);
+  }
+  .bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), #1fa989);
+    transition: width 0.4s ease;
+  }
+  .bar-fill.low { background: linear-gradient(90deg, var(--coral), #d13f3f); }
+  .stock-val { text-align: right; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Inventory Control <span>/ event-driven order pipeline</span></h1>
+  <div class="status-line"><span class="pulse"></span>polling every 2s</div>
+</header>
+
+<div class="funnel">
+  <div class="stage placed"><div class="label">Placed</div><div class="value" id="v-placed">–</div></div>
+  <div class="stage reserved"><div class="label">Reserved</div><div class="value" id="v-reserved">–</div></div>
+  <div class="stage confirmed"><div class="label">Confirmed</div><div class="value" id="v-confirmed">–</div></div>
+  <div class="stage rejected"><div class="label">Rejected (OOS)</div><div class="value" id="v-rejected">–</div></div>
+  <div class="stage cancelled"><div class="label">Cancelled</div><div class="value" id="v-cancelled">–</div></div>
+</div>
+
+<div class="panel">
+  <h2>Live stock levels</h2>
+  <div id="products"><div class="status-line">Loading...</div></div>
+</div>
+
+<script>
+function setText(id, val) { document.getElementById(id).textContent = val; }
+
+let maxStockSeen = {};
+
+async function poll() {
+  try {
+    const res = await fetch('/api/stats');
+    const data = await res.json();
+
+    setText('v-placed', data.orders.placed);
+    setText('v-reserved', data.orders.reserved);
+    setText('v-confirmed', data.orders.confirmed);
+    setText('v-rejected', data.orders.rejected);
+    setText('v-cancelled', data.orders.cancelled);
+
+    const container = document.getElementById('products');
+    container.innerHTML = '';
+    data.products.forEach(p => {
+      if (!(p.sku in maxStockSeen) || p.stock > maxStockSeen[p.sku]) {
+        maxStockSeen[p.sku] = Math.max(p.stock, maxStockSeen[p.sku] || p.stock);
+      }
+      const max = maxStockSeen[p.sku] || p.stock || 1;
+      const pct = Math.max(0, Math.min(100, (p.stock / max) * 100));
+      const low = pct < 20;
+
+      const row = document.createElement('div');
+      row.className = 'product-row';
+      row.innerHTML = `
+        <div class="name">${p.name}</div>
+        <div class="bar-track"><div class="bar-fill ${low ? 'low' : ''}" style="width:${pct}%"></div></div>
+        <div class="stock-val">${p.stock}</div>
+      `;
+      container.appendChild(row);
+    });
+  } catch (err) {
+    console.error('Failed to poll stats:', err);
+  }
+}
+
+poll();
+setInterval(poll, 2000);
+</script>
+
+</body>
+</html>

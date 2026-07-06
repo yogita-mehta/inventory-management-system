@@ -1,0 +1,24 @@
+{
+  "name": "inventory-management-system",
+  "version": "1.0.0",
+  "description": "Event-driven, real-time inventory and order management system built on Redis Streams, with atomic multi-item stock reservation and saga-style compensating transactions.",
+  "main": "src/api/server.js",
+  "scripts": {
+    "seed": "node scripts/seed.js",
+    "start:api": "node src/api/server.js",
+    "start:inventory-worker": "node src/workers/inventoryWorker.js",
+    "start:order-worker": "node src/workers/orderWorker.js",
+    "start:dashboard": "node src/dashboard/server.js",
+    "load-test": "node scripts/loadTest.js",
+    "flash-sale-test": "node scripts/flashSaleTest.js"
+  },
+  "keywords": ["inventory", "event-driven", "redis-streams", "distributed-systems"],
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "ioredis": "^5.4.1",
+    "uuid": "^9.0.1"
+  }
+}
