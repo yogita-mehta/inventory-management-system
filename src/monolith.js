@@ -70,4 +70,25 @@ app.listen(PORT, () => {
   console.log(`✅ Monolith System running on port ${PORT}`);
   console.log(`📡 API: http://localhost:${PORT}/api`);
   console.log(`📊 Dashboard: http://localhost:${PORT}/`);
+
+  // --- 🪄 LIVE TRAFFIC SIMULATOR ---
+  if (process.env.SIMULATION_ENABLED === 'true') {
+    const SKUS = ['SKU-LAPTOP-01', 'SKU-PHONE-01', 'SKU-HEADPHONE-01', 'SKU-WATCH-01', 'SKU-FLASHSALE-01'];
+    console.log('🪄 Traffic Simulator: ACTIVE');
+    
+    setInterval(async () => {
+      try {
+        const randomSku = SKUS[Math.floor(Math.random() * SKUS.length)];
+        const qty = Math.floor(Math.random() * 3) + 1;
+        const items = [{ sku: randomSku, quantity: qty }];
+        
+        const orderId = await orders.create(items);
+        await bus.publish('events:orders', { orderId, items, type: 'ORDER_PLACED' });
+        
+        console.log(`[Simulator] Generated order ${orderId.slice(0, 8)} for ${qty}x ${randomSku}`);
+      } catch (err) {
+        console.error('[Simulator] Error:', err.message);
+      }
+    }, 5000); // Generate an order every 5 seconds
+  }
 });
