@@ -2,10 +2,11 @@
 
 ![Dashboard Preview](assets/dashboard-preview.png)
 
-[![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
-[![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
-[![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/Node.js-v20.x-339933?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![Express](https://img.shields.io/badge/Express-4.19.2-000000?style=flat-square&logo=express&logoColor=white)](https://expressjs.com/)
+[![ioredis](https://img.shields.io/badge/ioredis-5.4.1-DD0031?style=flat-square&logo=redis&logoColor=white)](https://github.com/redis/ioredis)
+[![Redis](https://img.shields.io/badge/Redis-Streams-DD0031?style=flat-square&logo=redis&logoColor=white)](https://redis.io/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 An enterprise-grade, event-driven inventory system optimized for **high-concurrency flash sales**. Built with **Node.js** and **Redis Streams**, it solves the core challenge of e-commerce: maintaining exact stock counts under extreme simultaneous demand without overselling or performance degradation.
 
