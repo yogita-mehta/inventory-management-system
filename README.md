@@ -93,13 +93,39 @@ This system is tested against real-world "flash sale" scenarios.
    ```
 
 ### Running the System
-Run each command in a separate terminal:
+**Option A: Single Process (Easiest for Cloud/Demo)**
 ```bash
-npm run start:api                # REST API on :4100
-npm run start:inventory-worker   # Handles stock reservation
-npm run start:order-worker       # Handles payment processing
-npm run start:dashboard          # Web Dashboard on :5100
+npm start
 ```
+This starts the API, Dashboard, and all Workers in one terminal.
+
+**Option B: Scaled Workers (Distributed Production Mode)**
+Run each in a separate terminal:
+```bash
+npm run start:api
+npm run start:inventory-worker
+npm run start:order-worker
+npm run start:dashboard
+```
+
+---
+
+## ☁️ Deployment
+
+### One-Click via Render Blueprints
+1. Push your code to GitHub.
+2. Go to **Render Dashboard** → **Blueprints** → **New Blueprint**.
+3. Connect this repository.
+4. Render will use the `render.yaml` to spin up:
+   - A Redis instance (Internal)
+   - The API & Dashboard (Web Services)
+   - Inventory & Order Workers (Background Services)
+
+### Quick Deploy (Monolithic Mode)
+If you want to save on cloud costs, you can deploy a single "Web Service" on **Railway** or **Render**:
+1. Set the Start Command to `npm start`.
+2. Connect a Redis database and set the `REDIS_URL` environment variable.
+3. The app will automatically run all components in one container.
 
 ---
 
