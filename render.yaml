@@ -9,11 +9,12 @@ services:
     envVars:
       - key: REDIS_URL
         fromService:
+          type: keyvalue
           name: inventory-redis
-          type: redis
           property: connectionString
 
-# Redis Database (Free Tier)
-databases:
-  - name: inventory-redis
+  # Managed Redis Instance (Free Tier)
+  - type: keyvalue
+    name: inventory-redis
     plan: free
+    ipAllowList: [] # Allows all internal Render traffic
