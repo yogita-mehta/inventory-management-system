@@ -1,6 +1,4 @@
-# 🚀 High-Concurrency Inventory & Order Management System
-
-![Dashboard Preview](assets/dashboard-preview.png)
+# High-Concurrency Inventory & Order Management System
 
 [![Node.js](https://img.shields.io/badge/Node.js-v20.x-339933?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Express-4.19.2-000000?style=flat-square&logo=express&logoColor=white)](https://expressjs.com/)
